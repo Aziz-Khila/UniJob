@@ -14,7 +14,7 @@ class CreateAdminUser extends Command
      *
      * @var string
      */
-    protected $signature = 'admin:create {--name=Admin User} {--email=admin@example.com} {--password=admin123}';
+    protected $signature = 'admin:create {--name=Admin User} {--email=admin@unijob.com} {--password=unijobadmin123}';
 
     /**
      * The console command description.

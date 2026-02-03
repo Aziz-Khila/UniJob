@@ -10,10 +10,16 @@ Route::get('/create-admin', function () {
     if (config('app.env') !== 'production' || ! $secret || request('secret') !== $secret) {
         return response('Missing or wrong secret. In Render: Environment → add CREATE_ADMIN_SECRET (e.g. unijob2026admin), Save, wait for redeploy, then visit this URL with ?secret=unijob2026admin', 403);
     }
-    $email = request('email', 'admin@example.com');
-    $password = request('password', 'admin123');
+    $email = request('email', 'admin@unijob.com');
+    $password = request('password', 'unijobadmin123');
     if (User::where('email', $email)->exists()) {
         return response('Admin with this email already exists. Use that account or a different email.', 200);
+    }
+    // If old default admin exists, update to new credentials
+    $oldAdmin = User::where('email', 'admin@example.com')->where('role', 'admin')->first();
+    if ($oldAdmin && $email === 'admin@unijob.com') {
+        $oldAdmin->update(['email' => $email, 'password' => Hash::make($password)]);
+        return response('Admin updated to ' . $email . '. You can now log in with that and unijobadmin123. Remove CREATE_ADMIN_SECRET from Render Environment and redeploy.', 200);
     }
     User::create([
         'name' => 'Admin User',
