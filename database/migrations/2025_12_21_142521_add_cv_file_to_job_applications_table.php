@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasColumn('job_applications', 'cv_file')) {
+            return;
+        }
         Schema::table('job_applications', function (Blueprint $table) {
-            $table->string('cv_file')->nullable()->after('cover_letter');
+            $table->string('cv_file')->nullable();
         });
     }
 
@@ -21,6 +24,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasColumn('job_applications', 'cv_file')) {
+            return;
+        }
         Schema::table('job_applications', function (Blueprint $table) {
             $table->dropColumn('cv_file');
         });
