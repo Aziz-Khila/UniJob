@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 // One-time admin creation (only when CREATE_ADMIN_SECRET is set in env)
 Route::get('/create-admin', function () {
-    $secret = env('CREATE_ADMIN_SECRET');
+    $secret = config('services.create_admin_secret');
     if (config('app.env') !== 'production' || ! $secret || request('secret') !== $secret) {
-        abort(404);
+        return response('Missing or wrong secret. In Render: Environment → add CREATE_ADMIN_SECRET (e.g. unijob2026admin), Save, wait for redeploy, then visit this URL with ?secret=unijob2026admin', 403);
     }
     $email = request('email', 'admin@example.com');
     $password = request('password', 'admin123');
@@ -29,7 +29,7 @@ Route::get('/create-admin', function () {
 })->name('create-admin');
 
 // SPA catch-all route - all routes handled by Vue Router
-// Exclude API routes from catch-all
+// Exclude API and create-admin from catch-all
 Route::get('/{any}', function () {
     return view('app');
-})->where('any', '^(?!api).*$');
+})->where('any', '^(?!api|create-admin).*$');

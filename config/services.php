@@ -35,4 +35,6 @@ return [
         ],
     ],
 
+    'create_admin_secret' => env('CREATE_ADMIN_SECRET'),
+
 ];
